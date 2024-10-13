@@ -16,6 +16,7 @@ XML_PATH = f"C:/Users/joaob/Documents/tcia-lidc-xml/"
 #path to store the processed data
 SAVE_PATH = f'C:/Users/joaob/Documents/LIDC-IDRI-slices/'
 
+patient_done = set()
 
 for xml_f in sorted(os.listdir(XML_PATH)):
     xml_files = sorted(os.listdir(f"{XML_PATH}{xml_f}"))
@@ -43,8 +44,14 @@ for xml_f in sorted(os.listdir(XML_PATH)):
             for study_uid in sorted(os.listdir(f'{LIDC_PATH}/{patient_name}')):
 
                 if study_uid == study_instance_uid: # .xml file correspond with scans
+                    if patient_name in patient_done: break
+
                     print(f'paciente: {patient_name}')
+                    patient_done.add(patient_name)
                     patient = patient_name
                     done = True
-                    shutil.copy(f'{XML_PATH}{xml_f}/{file}', f'{SAVE_PATH}{patient}') #copy .xml file to the respective patient folder
+
+                    if os.path.exists(f'{SAVE_PATH}{patient}/'):
+                        shutil.copy(f'{XML_PATH}{xml_f}/{file}', f'{SAVE_PATH}{patient}') #copy .xml file to the respective patient folder
+
                     break
